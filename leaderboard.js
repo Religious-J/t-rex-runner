@@ -75,6 +75,14 @@
         });
     }
 
+    function showLeaderboard() {
+        leaderboardEl.classList.remove('lb-hidden');
+    }
+
+    function hideLeaderboard() {
+        leaderboardEl.classList.add('lb-hidden');
+    }
+
     // ---- Score submission ----
     var currentScore = 0;
     var alreadySubmitted = false;
@@ -210,17 +218,27 @@
     // ---- Wire up to game events ----
     function init() {
         buildUI();
-        // Load the leaderboard on page open.
+        // Leaderboard is visible on page open so players see the current
+        // standings before they start playing.
+        showLeaderboard();
         fetchAndRender(false);
         // Refresh on focus (e.g. coming back to the tab after submitting).
         window.addEventListener('focus', function () { fetchAndRender(false); });
 
+        // Hide the leaderboard once a run starts, show it again on game over.
+        window.addEventListener('dino:start', function () {
+            hideLeaderboard();
+        });
         window.addEventListener('dino:gameover', function (e) {
             var score = e && e.detail ? e.detail.score : 0;
+            // Force a refresh so the just-submitted score (if any) shows.
+            fetchAndRender(true);
+            showLeaderboard();
             showSubmit(score);
         });
         window.addEventListener('dino:restart', function () {
             hideSubmit();
+            hideLeaderboard();
         });
     }
 

@@ -518,6 +518,9 @@
 
             window.addEventListener(Runner.events.FOCUS,
                 this.onVisibilityChange.bind(this));
+
+            // Leaderboard hook: notify external code that the game started.
+            window.dispatchEvent(new CustomEvent('dino:start'));
         },
 
         clearCanvas: function () {
