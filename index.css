@@ -285,6 +285,12 @@ html, body {
   color: #359697;
 }
 
+#score-submit .lb-hint {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
 #score-submit input {
   width: 100%;
   box-sizing: border-box;

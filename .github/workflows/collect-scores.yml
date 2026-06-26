@@ -1,0 +1,82 @@
+name: Collect Scores
+
+# Triggered whenever a new issue is opened. The leaderboard frontend opens a
+# prefilled "new issue" URL with a JSON code block in the body; this workflow
+# parses that JSON, appends the score to scores.json, and closes the issue.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write      # to close the processed issue
+  contents: write    # to commit scores.json back to the repo
+
+jobs:
+  collect:
+    # Only treat issues whose title starts with "score:" — this is the marker
+    # the frontend puts on submission issues. Manual issues are left alone.
+    if: startsWith(github.event.issue.title, 'score:')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse score and update scores.json
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          set -euo pipefail
+
+          # Extract the JSON object from the first ```json ... ``` block in
+          # the issue body. The frontend wraps the payload this way.
+          body="$ISSUE_BODY"
+          json=$(printf '%s' "$body" | sed -n '/```json/,/```/p' | grep -v '```')
+
+          if [ -z "$json" ]; then
+            echo "No JSON block found in issue body; skipping."
+            exit 0
+          fi
+
+          # Validate it's a JSON object with name + score. Prefer the issue
+          # author's GitHub username over the self-reported name field.
+          name=$(printf '%s' "$json" | jq -r '.name // "Anonymous"')
+          score=$(printf '%s' "$json" | jq -r '.score // empty')
+          if [ -z "$score" ]; then
+            echo "No score field found; skipping."
+            exit 0
+          fi
+
+          # Use the GitHub login as the displayed name — can't be spoofed by
+          # the frontend, unlike the free-text name field.
+          entry=$(jq -n --arg name "$ISSUE_AUTHOR" --argjson score "$score" \
+            '{name: $name, score: $score}')
+
+          # Initialize scores.json if it doesn't exist.
+          if [ ! -f scores.json ]; then
+            echo '[]' > scores.json
+          fi
+
+          # Append and keep sorted by score descending (top 100 is plenty).
+          jq -M --argjson entry "$entry" '. + [$entry] | sort_by(-.score) | .[:100]' \
+            scores.json > scores.json.tmp
+          mv scores.json.tmp scores.json
+
+          echo "Added entry: $entry"
+
+      - name: Commit scores.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scores.json
+          git commit -m "Update leaderboard [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Close the issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue close "$NUMBER" --repo "$REPO" \
+            --comment "Score recorded ✓ — thanks for playing! The leaderboard will update shortly."
