@@ -11,7 +11,7 @@
 
     var REPO = 'Religious-J/t-rex-runner';
     var ISSUE_NUMBER = 1;
-    var TOKEN = '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';
+    var TOKEN = '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';
     var API_BASE = 'https://api.github.com/repos/' + REPO + '/issues/' + ISSUE_NUMBER + '/comments';
     var CACHE_KEY = 'dino_leaderboard_cache';
     var CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
