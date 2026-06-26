@@ -804,6 +804,11 @@
 
             // Reset the time clock.
             this.time = getTimeStamp();
+
+            // Leaderboard hook: notify external code of the final score.
+            window.dispatchEvent(new CustomEvent('dino:gameover', {
+                detail: { score: this.distanceMeter.getActualDistance(this.distanceRan) }
+            }));
         },
 
         stop: function () {
@@ -840,6 +845,9 @@
                 this.playSound(this.soundFx.BUTTON_PRESS);
                 this.invert(true);
                 this.update();
+
+                // Leaderboard hook: notify external code that the game restarted.
+                window.dispatchEvent(new CustomEvent('dino:restart'));
             }
         },
         

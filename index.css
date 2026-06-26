@@ -163,3 +163,179 @@ html, body {
   transition: transform 250ms cubic-bezier(0.4, 0, 1, 1) 400ms;
   z-index: 2;
 }
+
+/* ---- Leaderboard ---- */
+
+.lb-hidden {
+  display: none !important;
+}
+
+#leaderboard {
+  margin: 20px auto 40px;
+  max-width: 360px;
+  width: 100%;
+  background: #f7f7f7;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-family: 'Open Sans', sans-serif;
+  color: #2b2b2b;
+  box-sizing: border-box;
+}
+
+#leaderboard .lb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#leaderboard .lb-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#leaderboard .lb-small {
+  padding: 2px 8px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#leaderboard ol {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+#leaderboard li {
+  display: flex;
+  align-items: center;
+  padding: 5px 12px;
+  font-size: 14px;
+}
+
+#leaderboard li:nth-child(odd) {
+  background: #fbfbfb;
+}
+
+#leaderboard .lb-rank {
+  width: 24px;
+  flex: 0 0 24px;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+}
+
+#leaderboard .lb-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 8px;
+}
+
+#leaderboard .lb-score {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+#leaderboard .lb-empty {
+  color: #888;
+  font-style: italic;
+  justify-content: center;
+}
+
+/* ---- Score submission overlay ---- */
+
+#score-submit {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#score-submit .lb-panel {
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 6px;
+  width: 300px;
+  max-width: 90vw;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  color: #2b2b2b;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+#score-submit h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+#score-submit p {
+  margin: 0 0 16px;
+  font-size: 15px;
+}
+
+#score-submit #lb-final-score {
+  font-weight: 700;
+  font-size: 18px;
+  color: #359697;
+}
+
+#score-submit input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-family: inherit;
+}
+
+#score-submit input:focus {
+  outline: none;
+  border-color: #359697;
+}
+
+#score-submit .lb-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+#score-submit button,
+#leaderboard button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #359697;
+  color: #fff;
+}
+
+#score-submit button:hover,
+#leaderboard button:hover {
+  background: #2d7d7e;
+}
+
+#score-submit button:disabled {
+  background: #9bb8b8;
+  cursor: default;
+}
+
+#score-submit .lb-secondary,
+#leaderboard .lb-secondary {
+  background: #e0e0e0;
+  color: #2b2b2b;
+}
+
+#score-submit .lb-secondary:hover,
+#leaderboard .lb-secondary:hover {
+  background: #cfcfcf;
+}
